@@ -16,13 +16,15 @@ document.addEventListener('DOMContentLoaded', () => {
    WHATSAPP CONCIERGE INTEGRATION
    ========================================================================== */
 function initWhatsApp() {
-  const phone = "5511954876473";
-  const defaultMessage = "Olá! Vim através do site oficial e gostaria de mais informações sobre o Super Poten Max.";
+  const defaultUrl = "https://api.whatsapp.com/send/?phone=5511954876473&text=Ol%C3%A1%2C+vim+atrav%C3%A9s+da+p%C3%A1gina+e+gostaria+de+mais+informa%C3%A7%C3%B5es&type=phone_number&app_absent=0";
   
   window.openWhatsApp = function(customMsg) {
-    const msg = customMsg || defaultMessage;
-    const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
-    window.open(url, '_blank', 'noopener,noreferrer');
+    if (customMsg) {
+      const url = `https://api.whatsapp.com/send/?phone=5511954876473&text=${encodeURIComponent(customMsg)}&type=phone_number&app_absent=0`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } else {
+      window.open(defaultUrl, '_blank', 'noopener,noreferrer');
+    }
   };
 
   const waButtons = document.querySelectorAll('[data-action="whatsapp"]');
