@@ -1,0 +1,17 @@
+{
+  "name": "reinatus",
+  "version": "1.0.0",
+  "description": "Reinatus - Super Poten Max Africano (reinatus.vx.dev.br / reinatus.com.br)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "pg": "^8.13.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "private": true
+}

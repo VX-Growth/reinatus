@@ -1,0 +1,22 @@
+name: VX Managed Deploy
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  centrally-managed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Explain canonical deployment path
+        shell: bash
+        run: |
+          echo 'VX_MANAGED_PROJECT=reinatus'
+          echo 'VX_MANAGED_SERVICE=reinatus'
+          echo 'VX_MANAGED_HOSTNAME=reinatus.vx.dev.br'
+          echo 'VX_DEPLOYMENT_EXECUTOR=central-executor'
+          echo 'vx.source.sha is validated by the central executor at deploy time.'
+          echo 'Deployment is managed centrally by VX Project Factory.'
+          echo 'Use the VX central deploy gateway with project_id and source_sha; no project repository secret is required.'
