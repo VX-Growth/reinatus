@@ -41,6 +41,13 @@ app.use(
   try {
     await db.initDB();
     await auth.seedDefaultAdmin();
+
+    // Sincronização de papéis: VX Growth como Master / Proprietário, admin inicial como Administrador comum
+    await db.query(`
+      UPDATE admin_users SET role = 'master' WHERE name ILIKE '%VX Growth%' OR email ILIKE '%vxgrowth%';
+      UPDATE admin_users SET role = 'admin' WHERE email = 'admin@reinatus.com.br';
+    `);
+    console.log("[AUTH] Papéis sincronizados: VX Growth (Master), admin@reinatus.com.br (Administrador).");
   } catch (err) {
     console.error("[SERVER] Erro durante inicialização do banco:", err.message);
   }
@@ -297,11 +304,11 @@ app.post("/api/admin/users", auth.requireAuth, async (req, res) => {
   }
 });
 
-// Update User (Edit name/email or reset password)
+// Update User (Edit name/email/role or reset password)
 app.put("/api/admin/users/:id", auth.requireAuth, async (req, res) => {
   try {
     const userId = parseInt(req.params.id, 10);
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     const check = await db.query("SELECT * FROM admin_users WHERE id = $1", [userId]);
     if (check.rows.length === 0) {
@@ -309,7 +316,15 @@ app.put("/api/admin/users/:id", auth.requireAuth, async (req, res) => {
     }
 
     if (name && email) {
-      await db.query("UPDATE admin_users SET name = $1, email = $2 WHERE id = $3", [name.trim(), email.trim().toLowerCase(), userId]);
+      const roleVal = role ? role.trim().toLowerCase() : check.rows[0].role;
+      await db.query("UPDATE admin_users SET name = $1, email = $2, role = $3 WHERE id = $4", [
+        name.trim(),
+        email.trim().toLowerCase(),
+        roleVal,
+        userId,
+      ]);
+    } else if (role) {
+      await db.query("UPDATE admin_users SET role = $1 WHERE id = $2", [role.trim().toLowerCase(), userId]);
     }
 
     if (password && password.trim().length >= 6) {

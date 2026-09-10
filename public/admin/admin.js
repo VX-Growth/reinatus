@@ -49,7 +49,14 @@
 
     if (currentUser) {
       document.getElementById('current-user-name').textContent = currentUser.name || currentUser.email;
-      document.getElementById('current-user-role').textContent = currentUser.role || 'Admin';
+      const roleEl = document.getElementById('current-user-role');
+      if (currentUser.role === 'master' || currentUser.role === 'superadmin') {
+        roleEl.textContent = '⭐ Proprietário / Master';
+        roleEl.className = 'user-role text-gold font-bold';
+      } else {
+        roleEl.textContent = 'Administrador Comum';
+        roleEl.className = 'user-role text-cyan font-bold';
+      }
       document.getElementById('current-user-avatar').textContent = (currentUser.name || 'A').charAt(0).toUpperCase();
     }
 
@@ -523,12 +530,16 @@
         const tr = document.createElement('tr');
         const isSelf = currentUser && currentUser.id === u.id;
         const lastLoginStr = u.last_login ? new Date(u.last_login).toLocaleString('pt-BR') : 'Nunca';
+        const isMaster = u.role === 'master' || u.role === 'superadmin';
+        const roleBadge = isMaster
+          ? '<span class="text-gold font-bold">⭐ Proprietário / Master</span>'
+          : '<span class="text-cyan font-bold">Administrador Comum</span>';
 
         tr.innerHTML = `
           <td><strong>#${u.id}</strong></td>
           <td><strong>${u.name}</strong> ${isSelf ? '<span class="brand-tag">Você</span>' : ''}</td>
           <td>${u.email}</td>
-          <td><span class="text-cyan font-bold" style="text-transform: capitalize;">${u.role}</span></td>
+          <td>${roleBadge}</td>
           <td>${lastLoginStr}</td>
           <td>
             <button class="btn btn-secondary btn-sm edit-user-btn" data-id="${u.id}" data-name="${u.name}" data-email="${u.email}" data-role="${u.role}">
@@ -555,7 +566,7 @@
           document.getElementById('modal-user-id').value = id;
           document.getElementById('modal-name').value = name;
           document.getElementById('modal-email').value = email;
-          document.getElementById('modal-role').value = role;
+          document.getElementById('modal-role').value = (role === 'master' || role === 'superadmin') ? 'master' : 'admin';
 
           document.getElementById('modal-user-title').textContent = 'Editar Administrador';
           document.getElementById('modal-password-label').textContent = 'Nova Senha (opcional)';
