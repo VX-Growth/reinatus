@@ -875,3 +875,275 @@ input:checked + .slider:before {
     padding: 1rem;
   }
 }
+
+/* ==========================================================================
+   REAL-TIME ONLINE USERS MONITOR STYLES & RADAR ANIMATION
+   ========================================================================== */
+.live-counter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  color: #34d399;
+  font-weight: 600;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
+  transition: transform 0.2s, background 0.2s;
+}
+
+.live-counter-pill:hover {
+  background: rgba(16, 185, 129, 0.2);
+}
+
+.live-pill-text {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.9;
+}
+
+.live-radar-dot {
+  position: relative;
+  width: 9px;
+  height: 9px;
+  background: #10b981;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.live-radar-dot::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid #10b981;
+  animation: radar-pulse 1.8s ease-out infinite;
+  opacity: 0;
+}
+
+@keyframes radar-pulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* Real-Time Live Monitor Card */
+.realtime-live-card {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(17, 24, 39, 0.9) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), 0 0 25px rgba(16, 185, 129, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.realtime-live-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #10b981, #06b6d4, #10b981);
+  background-size: 200% 100%;
+  animation: shimmer-bar 3s linear infinite;
+}
+
+@keyframes shimmer-bar {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+.realtime-live-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.realtime-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #34d399;
+  letter-spacing: 0.06em;
+}
+
+.realtime-window-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.realtime-live-body {
+  display: grid;
+  grid-template-columns: 1.2fr 1.3fr 1.5fr;
+  gap: 1.75rem;
+  align-items: center;
+}
+
+@media (max-width: 1050px) {
+  .realtime-live-body {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+}
+
+.realtime-stat-primary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.realtime-number-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.realtime-number {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  font-weight: 900;
+  line-height: 1;
+  color: #34d399;
+  text-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+  transition: color 0.3s;
+}
+
+.realtime-status-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+}
+
+.realtime-desc strong {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  margin-bottom: 0.15rem;
+}
+
+.realtime-desc p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Devices Box */
+.realtime-devices-box {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+}
+
+.realtime-box-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 0.6rem;
+  letter-spacing: 0.05em;
+}
+
+.realtime-device-bar-wrap {
+  display: flex;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  margin-bottom: 0.6rem;
+}
+
+.realtime-device-bar.mobile {
+  background: var(--cyan);
+  transition: width 0.4s ease;
+}
+
+.realtime-device-bar.desktop {
+  background: var(--emerald);
+  transition: width 0.4s ease;
+}
+
+.realtime-device-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.realtime-device-labels strong {
+  color: var(--text-main);
+}
+
+/* Feed Box */
+.realtime-feed-box {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  max-height: 125px;
+  overflow-y: auto;
+}
+
+.realtime-feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.realtime-feed-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.76rem;
+  padding: 0.35rem 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-sm);
+  border-left: 2px solid var(--emerald);
+}
+
+.realtime-feed-item.checkout {
+  border-left-color: var(--gold);
+}
+
+.realtime-feed-item.whatsapp {
+  border-left-color: #25d366;
+}
+
+.realtime-feed-time {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-left: 0.5rem;
+  white-space: nowrap;
+}
+

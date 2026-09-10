@@ -80,7 +80,39 @@
 
   trackPageview();
 
-  // 3. Meta Pixel Dynamic Injection
+  // 3. Real-Time Online Presence Heartbeat
+  function sendHeartbeat() {
+    if (document.visibilityState === 'hidden') return;
+    const payload = {
+      session_id: sessionId,
+      visitor_id: visitorId,
+      path: window.location.pathname,
+      device_type: getDeviceType()
+    };
+
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon('/api/track/ping', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
+    } else {
+      fetch('/api/track/ping', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        keepalive: true
+      }).catch(function () {});
+    }
+  }
+
+  // Ping immediately on load and every 25 seconds
+  sendHeartbeat();
+  setInterval(sendHeartbeat, 25000);
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') {
+      sendHeartbeat();
+    }
+  });
+
+  // 4. Meta Pixel Dynamic Injection
   let metaPixelActive = false;
 
   fetch('/api/config/meta')

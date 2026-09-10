@@ -96,12 +96,49 @@ app.get("/api/config/meta", async (req, res) => {
   }
 });
 
+// Real-time presence heartbeat ping
+app.post("/api/track/ping", async (req, res) => {
+  try {
+    const { session_id, visitor_id, path: pagePath, device_type } = req.body || {};
+    const country = req.headers["cf-ipcountry"] || req.headers["x-country"] || "BR";
+
+    if (visitor_id) {
+      analytics.recordPresence({
+        visitor_id,
+        session_id,
+        path: pagePath || "/",
+        device_type: device_type || "Desktop",
+        country,
+      });
+    }
+
+    return res.json({ success: true, online: true });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
 // Track pageview
 app.post("/api/track/pageview", async (req, res) => {
   try {
     const { session_id, visitor_id, path: pagePath, referrer, device_type, browser, os } = req.body;
     const country = req.headers["cf-ipcountry"] || req.headers["x-country"] || "BR";
     const userAgent = req.headers["user-agent"] || "";
+
+    // Record presence and live activity
+    if (visitor_id) {
+      analytics.recordPresence({
+        visitor_id,
+        session_id,
+        path: pagePath || "/",
+        device_type: device_type || "Desktop",
+        country,
+        activity: {
+          type: "pageview",
+          text: `Acessou a página inicial (${device_type || "Desktop"})`,
+        },
+      });
+    }
 
     await db.query(
       `INSERT INTO analytics_pageviews (session_id, visitor_id, path, referrer, device_type, browser, os, country, user_agent)
@@ -165,6 +202,28 @@ app.post("/api/track/click", async (req, res) => {
         click_y_pct !== undefined ? parseFloat(click_y_pct) : null,
       ]
     );
+
+    // Record presence and live activity
+    if (visitor_id) {
+      let actText = `Clicou em ${button_label || button_id}`;
+      if (event_name === "initiate_checkout") {
+        actText = `Iniciou checkout: ${product_name || "Produto"} (R$ ${parseFloat(product_value || 0).toFixed(2)})`;
+      } else if (event_name === "whatsapp_click") {
+        actText = "Clicou para falar no WhatsApp";
+      }
+
+      analytics.recordPresence({
+        visitor_id,
+        session_id,
+        path: "/",
+        device_type: "Desktop",
+        country: req.headers["cf-ipcountry"] || req.headers["x-country"] || "BR",
+        activity: {
+          type: event_name === "initiate_checkout" ? "checkout" : (event_name === "whatsapp_click" ? "whatsapp" : "click"),
+          text: actText,
+        },
+      });
+    }
 
     // Meta CAPI Server-side dispatch for purchase intention or contact
     if (event_name === "initiate_checkout" || event_name === "whatsapp_click") {
@@ -465,6 +524,16 @@ app.post("/api/admin/settings/meta/test", auth.requireAuth, async (req, res) => 
 // ============================================================================
 // ADMIN ANALYTICS ENDPOINTS
 // ============================================================================
+
+// Real-Time Online Users & Activity
+app.get("/api/admin/analytics/realtime", auth.requireAuth, async (req, res) => {
+  try {
+    const data = await analytics.getRealtimeOnlineUsers();
+    return res.json(data);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
 
 // Overview KPIs
 app.get("/api/admin/analytics/overview", auth.requireAuth, async (req, res) => {

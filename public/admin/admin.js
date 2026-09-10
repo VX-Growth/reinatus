@@ -60,10 +60,12 @@
       document.getElementById('current-user-avatar').textContent = (currentUser.name || 'A').charAt(0).toUpperCase();
     }
 
+    startRealtimePolling();
     loadCurrentTabData();
   }
 
   function renderLoggedOutState() {
+    stopRealtimePolling();
     currentUser = null;
     dashboardView.classList.add('hidden');
     loginView.classList.remove('hidden');
@@ -159,9 +161,106 @@
   }
 
   // ========================================================================
+  // REAL-TIME PRESENCE & LIVE MONITORING
+  // ========================================================================
+  let realtimeTimer = null;
+
+  function startRealtimePolling() {
+    stopRealtimePolling();
+    loadRealtimeData();
+    realtimeTimer = setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        loadRealtimeData();
+      }
+    }, 5000);
+  }
+
+  function stopRealtimePolling() {
+    if (realtimeTimer) {
+      clearInterval(realtimeTimer);
+      realtimeTimer = null;
+    }
+  }
+
+  async function loadRealtimeData() {
+    try {
+      const res = await fetch('/api/admin/analytics/realtime');
+      if (!res.ok) return;
+      const data = await res.json();
+
+      const onlineCount = data.onlineUsers || 0;
+
+      // 1. Header live pill counter
+      const headerCountEl = document.getElementById('header-online-count');
+      if (headerCountEl) {
+        headerCountEl.textContent = onlineCount;
+      }
+
+      // 2. Overview real-time big number
+      const realtimeCountEl = document.getElementById('realtime-online-count');
+      if (realtimeCountEl) {
+        realtimeCountEl.textContent = onlineCount;
+      }
+
+      // 3. Devices breakdown
+      const dev = data.devices || {};
+      const mobilePct = dev.mobilePct || 0;
+      const desktopPct = dev.desktopPct || 0;
+      const mobileCount = dev.mobileCount || 0;
+      const desktopCount = dev.desktopCount || 0;
+
+      const mobileBar = document.getElementById('realtime-mobile-bar');
+      const desktopBar = document.getElementById('realtime-desktop-bar');
+      if (mobileBar && desktopBar) {
+        if (onlineCount === 0) {
+          mobileBar.style.width = '50%';
+          desktopBar.style.width = '50%';
+        } else {
+          mobileBar.style.width = `${mobilePct}%`;
+          desktopBar.style.width = `${desktopPct}%`;
+        }
+      }
+
+      const mobilePctEl = document.getElementById('realtime-mobile-pct');
+      const desktopPctEl = document.getElementById('realtime-desktop-pct');
+      const mobileCountEl = document.getElementById('realtime-mobile-count');
+      const desktopCountEl = document.getElementById('realtime-desktop-count');
+
+      if (mobilePctEl) mobilePctEl.textContent = `${mobilePct}%`;
+      if (desktopPctEl) desktopPctEl.textContent = `${desktopPct}%`;
+      if (mobileCountEl) mobileCountEl.textContent = mobileCount;
+      if (desktopCountEl) desktopCountEl.textContent = desktopCount;
+
+      // 4. Live activity feed
+      const feedEl = document.getElementById('realtime-activity-feed');
+      if (feedEl && data.recentActivities) {
+        if (data.recentActivities.length === 0) {
+          feedEl.innerHTML = '<div class="realtime-feed-empty text-muted">Aguardando primeiras interações...</div>';
+        } else {
+          feedEl.innerHTML = data.recentActivities
+            .map((act) => {
+              const timeAgo = Math.max(1, Math.floor((Date.now() - act.timestamp) / 1000));
+              const timeStr = timeAgo < 60 ? `${timeAgo}s atrás` : `${Math.floor(timeAgo / 60)}m atrás`;
+              return `
+                <div class="realtime-feed-item ${act.type}">
+                  <span>${act.text}</span>
+                  <span class="realtime-feed-time">${timeStr}</span>
+                </div>
+              `;
+            })
+            .join('');
+        }
+      }
+    } catch (err) {
+      console.warn('Erro ao atualizar métricas em tempo real:', err);
+    }
+  }
+
+  // ========================================================================
   // 3. OVERVIEW TAB
   // ========================================================================
   async function loadOverview() {
+    loadRealtimeData();
     try {
       const [overviewRes, trafficRes] = await Promise.all([
         fetch(`/api/admin/analytics/overview?period=${currentPeriod}`),

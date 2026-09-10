@@ -59,6 +59,11 @@
     <header class="topbar">
       <div class="topbar-left">
         <div class="brand-title">REI<span>NATUS</span> <span class="brand-tag">PRO</span></div>
+        <div class="live-counter-pill" id="header-live-pill" title="Visitantes no site neste exato momento">
+          <span class="live-radar-dot"></span>
+          <strong id="header-online-count">0</strong>
+          <span class="live-pill-text">online agora</span>
+        </div>
         <a href="/" target="_blank" class="live-link-pill" title="Abrir página pública no ar">
           <span class="live-dot"></span> Ver Site no Ar
         </a>
@@ -121,6 +126,51 @@
            TAB 1: VISÃO GERAL
            ==================================================================== -->
       <section id="tab-overview" class="tab-content active">
+        <!-- REAL-TIME LIVE VISITORS MONITOR -->
+        <div class="realtime-live-card">
+          <div class="realtime-live-header">
+            <div class="realtime-badge">
+              <span class="live-radar-dot"></span>
+              <span>AO VIVO NO SITE</span>
+            </div>
+            <div class="realtime-window-hint">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              Janela de 3 minutos de atividade ativa
+            </div>
+          </div>
+          <div class="realtime-live-body">
+            <div class="realtime-stat-primary">
+              <div class="realtime-number-wrap">
+                <span class="realtime-number" id="realtime-online-count">0</span>
+                <span class="realtime-status-pill">ativo agora</span>
+              </div>
+              <div class="realtime-desc">
+                <strong>Usuários Online Neste Instante</strong>
+                <p>Visitantes navegando ativamente e interagindo no site</p>
+              </div>
+            </div>
+
+            <div class="realtime-devices-box">
+              <div class="realtime-box-title">Dispositivos ao Vivo</div>
+              <div class="realtime-device-bar-wrap">
+                <div class="realtime-device-bar mobile" id="realtime-mobile-bar" style="width: 50%;"></div>
+                <div class="realtime-device-bar desktop" id="realtime-desktop-bar" style="width: 50%;"></div>
+              </div>
+              <div class="realtime-device-labels">
+                <span>📱 Celular: <strong id="realtime-mobile-pct">0%</strong> (<span id="realtime-mobile-count">0</span>)</span>
+                <span>💻 Desktop: <strong id="realtime-desktop-pct">0%</strong> (<span id="realtime-desktop-count">0</span>)</span>
+              </div>
+            </div>
+
+            <div class="realtime-feed-box">
+              <div class="realtime-box-title">Últimas Ações ao Vivo</div>
+              <div class="realtime-feed-list" id="realtime-activity-feed">
+                <div class="realtime-feed-empty text-muted">Aguardando primeiras interações...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- KPI Cards Grid -->
         <div class="kpi-grid">
           <div class="kpi-card">
