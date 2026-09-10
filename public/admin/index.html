@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Administrativo | Reinatus Suplementos</title>
+  <link rel="icon" type="image/jpeg" href="../assets/images/favicon.jpg">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- ========================================================================
+       1. LOGIN VIEW
+       ======================================================================== -->
+  <div id="login-view" class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <div class="brand-badge">REI<span>NATUS</span></div>
+        <h2>Painel Administrativo</h2>
+        <p>Acesse o painel central de métricas e configurações</p>
+      </div>
+
+      <form id="login-form" class="auth-form">
+        <div id="login-error" class="alert-box error hidden"></div>
+
+        <div class="form-group">
+          <label for="login-email">E-mail</label>
+          <input type="email" id="login-email" required placeholder="admin@reinatus.com.br" autocomplete="username">
+        </div>
+
+        <div class="form-group">
+          <label for="login-password">Senha</label>
+          <input type="password" id="login-password" required placeholder="••••••••••••" autocomplete="current-password">
+        </div>
+
+        <button type="submit" id="login-btn" class="btn btn-primary btn-block">
+          <span class="btn-text">Entrar no Painel</span>
+          <div class="btn-spinner hidden"></div>
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <span>Ambiente Seguro • Criptografia de Ponta</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       2. DASHBOARD VIEW
+       ======================================================================== -->
+  <div id="dashboard-view" class="app-layout hidden">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="brand-title">REI<span>NATUS</span> <span class="brand-tag">PRO</span></div>
+        <a href="/" target="_blank" class="live-link-pill" title="Abrir página pública no ar">
+          <span class="live-dot"></span> Ver Site no Ar
+        </a>
+      </div>
+
+      <div class="topbar-right">
+        <!-- Period Selector -->
+        <div class="period-pills">
+          <button class="period-btn active" data-period="today">Hoje</button>
+          <button class="period-btn" data-period="yesterday">Ontem</button>
+          <button class="period-btn" data-period="7d">7 Dias</button>
+          <button class="period-btn" data-period="30d">30 Dias</button>
+          <button class="period-btn" data-period="all">Geral</button>
+        </div>
+
+        <!-- User Menu -->
+        <div class="user-pill">
+          <div class="user-avatar" id="current-user-avatar">A</div>
+          <div class="user-details">
+            <span class="user-name" id="current-user-name">Administrador</span>
+            <span class="user-role" id="current-user-role">Superadmin</span>
+          </div>
+          <button id="logout-btn" class="btn-icon" title="Sair da conta">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Navigation Tabs -->
+    <nav class="sub-nav">
+      <div class="nav-tabs">
+        <button class="tab-link active" data-target="tab-overview">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+          Visão Geral
+        </button>
+        <button class="tab-link" data-target="tab-products">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+          Ranking de Produtos
+        </button>
+        <button class="tab-link" data-target="tab-heatmap">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/></svg>
+          Mapa de Calor & Cliques
+        </button>
+        <button class="tab-link" data-target="tab-meta">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Meta Ads (Pixel & CAPI)
+        </button>
+        <button class="tab-link" data-target="tab-users">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          Usuários
+        </button>
+      </div>
+    </nav>
+
+    <!-- Content Sections -->
+    <main class="content-container">
+      
+      <!-- ====================================================================
+           TAB 1: VISÃO GERAL
+           ==================================================================== -->
+      <section id="tab-overview" class="tab-content active">
+        <!-- KPI Cards Grid -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">Acessos Totais (Pageviews)</div>
+            <div class="kpi-value" id="kpi-pageviews">0</div>
+            <div class="kpi-sub">Visualizações de página</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label">Visitantes Únicos</div>
+            <div class="kpi-value text-cyan" id="kpi-visitors">0</div>
+            <div class="kpi-sub">Sessões individuais</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label">Cliques em Checkout</div>
+            <div class="kpi-value text-emerald" id="kpi-checkout-clicks">0</div>
+            <div class="kpi-sub">
+              Conversão: <strong id="kpi-conv-rate">0.0%</strong>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label">Valor Estimado Iniciado</div>
+            <div class="kpi-value text-gold" id="kpi-checkout-value">R$ 0,00</div>
+            <div class="kpi-sub">Intenção de compra em kits</div>
+          </div>
+        </div>
+
+        <!-- Secondary Overview Grid -->
+        <div class="grid-2col mt-6">
+          <!-- Traffic Devices -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Dispositivos dos Visitantes</h3>
+            </div>
+            <div class="card-body">
+              <div class="device-bar-item">
+                <div class="device-label-row">
+                  <span>📱 Celular / Mobile</span>
+                  <span id="dev-mobile-pct">0%</span>
+                </div>
+                <div class="progress-track"><div class="progress-bar cyan" id="dev-mobile-bar" style="width: 0%"></div></div>
+              </div>
+
+              <div class="device-bar-item mt-4">
+                <div class="device-label-row">
+                  <span>💻 Computador / Desktop</span>
+                  <span id="dev-desktop-pct">0%</span>
+                </div>
+                <div class="progress-track"><div class="progress-bar emerald" id="dev-desktop-bar" style="width: 0%"></div></div>
+              </div>
+
+              <div class="device-bar-item mt-4">
+                <div class="device-label-row">
+                  <span>📟 Tablet</span>
+                  <span id="dev-tablet-pct">0%</span>
+                </div>
+                <div class="progress-track"><div class="progress-bar gold" id="dev-tablet-bar" style="width: 0%"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top Referrers -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Principais Origens de Tráfego</h3>
+            </div>
+            <div class="card-body">
+              <ul class="referrer-list" id="top-referrers-list">
+                <li class="empty-state">Carregando origens de tráfego...</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 2: RANKING DE PRODUTOS
+           ==================================================================== -->
+      <section id="tab-products" class="tab-content">
+        <div class="card">
+          <div class="card-header flex-between">
+            <div>
+              <h3>Performance por Kit de Vendas</h3>
+              <p class="card-desc">Compare o volume de cliques e receita potencial de cada um dos 7 produtos</p>
+            </div>
+          </div>
+
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="data-table" id="products-ranking-table">
+                <thead>
+                  <tr>
+                    <th>Posição</th>
+                    <th>Produto</th>
+                    <th>Preço Oficial</th>
+                    <th>Cliques</th>
+                    <th>Share (%)</th>
+                    <th>Valor Potencial</th>
+                    <th>Checkout Yampi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td colspan="7" class="text-center p-6">Carregando ranking de produtos...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 3: MAPA DE CALOR & CLIQUES
+           ==================================================================== -->
+      <section id="tab-heatmap" class="tab-content">
+        <div class="grid-2col">
+          <!-- Click Ranking Table -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Cliques por Botão / Chamada</h3>
+              <p class="card-desc">Descubra quais CTAs estão atraindo mais o público</p>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="data-table" id="buttons-clicks-table">
+                  <thead>
+                    <tr>
+                      <th>Botão / CTA</th>
+                      <th>Tipo</th>
+                      <th>Cliques</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td colspan="3" class="text-center p-6">Carregando cliques...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visual Heatmap Representation -->
+          <div class="card">
+            <div class="card-header flex-between">
+              <div>
+                <h3>Mapa de Densidade de Cliques</h3>
+                <p class="card-desc">Concentração de cliques nas seções da Landing Page</p>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="heatmap-canvas-container" id="heatmap-preview">
+                <div class="mockup-page">
+                  <div class="mockup-section hero" data-zone="Hero & Header">
+                    <span class="mockup-label">Header & Dobra Inicial (Hero)</span>
+                    <div class="mockup-stat" id="stat-zone-hero">0 cliques</div>
+                  </div>
+                  <div class="mockup-section sample" data-zone="Amostra Grátis">
+                    <span class="mockup-label">Banner Amostra Grátis</span>
+                    <div class="mockup-stat" id="stat-zone-amostra">0 cliques</div>
+                  </div>
+                  <div class="mockup-section treatment" data-zone="Gotas vs Cápsulas">
+                    <span class="mockup-label">Gotas vs Cápsulas</span>
+                    <div class="mockup-stat" id="stat-zone-treatment">0 cliques</div>
+                  </div>
+                  <div class="mockup-section kits" data-zone="Grade de Kits">
+                    <span class="mockup-label">Grade de Kits & Preços</span>
+                    <div class="mockup-stat" id="stat-zone-kits">0 cliques</div>
+                  </div>
+                  <div class="mockup-section footer" data-zone="Rodapé & Flutuante">
+                    <span class="mockup-label">Rodapé & WhatsApp Flutuante</span>
+                    <div class="mockup-stat" id="stat-zone-footer">0 cliques</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 4: META ADS (PIXEL & CAPI)
+           ==================================================================== -->
+      <section id="tab-meta" class="tab-content">
+        <div class="card max-w-3xl">
+          <div class="card-header">
+            <h3>Configuração do Meta Ads (Facebook & Instagram)</h3>
+            <p class="card-desc">Integre o Pixel no navegador e a API de Conversões (CAPI) do lado do servidor</p>
+          </div>
+
+          <div class="card-body">
+            <div id="meta-save-alert" class="alert-box success hidden"></div>
+            <div id="meta-error-alert" class="alert-box error hidden"></div>
+
+            <form id="meta-form">
+              <div class="form-toggle-row mb-6">
+                <div>
+                  <strong>Ativar Rastreamento Meta</strong>
+                  <p class="text-sm text-muted">Dispara PageView, InitiateCheckout e Contact via Browser e CAPI</p>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="meta-is-active">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label for="meta-pixel-id">Meta Pixel ID</label>
+                <input type="text" id="meta-pixel-id" placeholder="Ex: 123456789012345" class="input-code">
+                <span class="form-hint">Encontrado no Gerenciador de Eventos da Meta (ID numérico de 15 a 16 dígitos).</span>
+              </div>
+
+              <div class="form-group mt-4">
+                <label for="meta-access-token">Access Token da API de Conversões (CAPI)</label>
+                <textarea id="meta-access-token" rows="3" placeholder="EAAB..." class="input-code text-xs"></textarea>
+                <span class="form-hint">Token de Sistema permanente gerado no Gerenciador de Negócios (Business Manager).</span>
+              </div>
+
+              <div class="form-group mt-4">
+                <label for="meta-test-code">Código de Teste de Evento (Opcional)</label>
+                <input type="text" id="meta-test-code" placeholder="Ex: TEST12345" class="input-code">
+                <span class="form-hint">Utilize a aba 'Testar Eventos' no Gerenciador da Meta para conferir disparos em tempo real.</span>
+              </div>
+
+              <div class="form-actions mt-6 flex-between">
+                <button type="submit" class="btn btn-primary">
+                  Salvar Configurações
+                </button>
+                <button type="button" id="meta-test-btn" class="btn btn-secondary">
+                  Testar Conexão com Meta
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 5: GESTÃO DE USUÁRIOS
+           ==================================================================== -->
+      <section id="tab-users" class="tab-content">
+        <div class="card">
+          <div class="card-header flex-between">
+            <div>
+              <h3>Usuários Administradores</h3>
+              <p class="card-desc">Gerencie quem tem permissão para acessar o painel de controle</p>
+            </div>
+            <button id="add-user-btn" class="btn btn-primary btn-sm">
+              + Novo Administrador
+            </button>
+          </div>
+
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="data-table" id="users-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Função</th>
+                    <th>Último Acesso</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td colspan="6" class="text-center p-6">Carregando usuários...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: CRIAR / EDITAR USUÁRIO
+       ======================================================================== -->
+  <div id="user-modal" class="modal-overlay hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="modal-user-title">Adicionar Novo Administrador</h3>
+        <button class="modal-close" id="modal-user-close">&times;</button>
+      </div>
+      <form id="user-modal-form">
+        <div class="modal-body">
+          <div id="modal-user-error" class="alert-box error hidden"></div>
+          <input type="hidden" id="modal-user-id">
+
+          <div class="form-group">
+            <label for="modal-name">Nome Completo</label>
+            <input type="text" id="modal-name" required placeholder="Ex: Roberto Silva">
+          </div>
+
+          <div class="form-group mt-4">
+            <label for="modal-email">E-mail de Acesso</label>
+            <input type="email" id="modal-email" required placeholder="usuario@reinatus.com.br">
+          </div>
+
+          <div class="form-group mt-4">
+            <label for="modal-password" id="modal-password-label">Senha</label>
+            <input type="password" id="modal-password" placeholder="Mínimo 6 caracteres">
+            <span class="form-hint" id="modal-password-hint"></span>
+          </div>
+
+          <div class="form-group mt-4">
+            <label for="modal-role">Nível de Permissão</label>
+            <select id="modal-role">
+              <option value="admin">Administrador Padrão</option>
+              <option value="superadmin">Superadmin</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="modal-user-cancel">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="modal-user-submit">Salvar Usuário</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="admin.js"></script>
+</body>
+</html>
