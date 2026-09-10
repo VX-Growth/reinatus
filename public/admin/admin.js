@@ -465,11 +465,22 @@
     }
 
     addBtn.addEventListener('click', () => {
+      const isCurrentMaster = currentUser && (currentUser.role === 'master' || currentUser.role === 'superadmin');
       document.getElementById('modal-user-title').textContent = 'Adicionar Novo Administrador';
       document.getElementById('modal-password-label').textContent = 'Senha *';
       document.getElementById('modal-password').required = true;
       document.getElementById('modal-password-hint').textContent = 'Mínimo de 6 caracteres.';
       document.getElementById('modal-user-id').value = '';
+
+      const roleSelectGroup = document.getElementById('modal-role').closest('.form-group');
+      if (!isCurrentMaster) {
+        document.getElementById('modal-role').value = 'admin';
+        roleSelectGroup.style.display = 'none';
+      } else {
+        roleSelectGroup.style.display = 'block';
+        document.getElementById('modal-role').value = 'admin';
+      }
+
       modal.classList.remove('hidden');
     });
 
@@ -526,14 +537,21 @@
         return;
       }
 
+      const isCurrentMaster = currentUser && (currentUser.role === 'master' || currentUser.role === 'superadmin');
+
       data.users.forEach((u) => {
         const tr = document.createElement('tr');
         const isSelf = currentUser && currentUser.id === u.id;
         const lastLoginStr = u.last_login ? new Date(u.last_login).toLocaleString('pt-BR') : 'Nunca';
-        const isMaster = u.role === 'master' || u.role === 'superadmin';
-        const roleBadge = isMaster
+        const isTargetMaster = u.role === 'master' || u.role === 'superadmin';
+        const roleBadge = isTargetMaster
           ? '<span class="text-gold font-bold">⭐ Proprietário / Master</span>'
           : '<span class="text-cyan font-bold">Administrador Comum</span>';
+
+        // Regras de exclusão:
+        // 1. O Master NUNCA pode ser excluído por ninguém
+        // 2. Administrador comum pode ser excluído (exceto a própria conta logada)
+        const canDelete = !isTargetMaster && !isSelf;
 
         tr.innerHTML = `
           <td><strong>#${u.id}</strong></td>
@@ -546,9 +564,9 @@
               Editar
             </button>
             ${
-              !isSelf
+              canDelete
                 ? `<button class="btn btn-secondary btn-sm delete-user-btn" data-id="${u.id}" data-name="${u.name}" style="color: var(--red); margin-left: 0.35rem;">Excluir</button>`
-                : ''
+                : (isTargetMaster ? `<span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); font-size: 0.72rem; padding: 0.25rem 0.5rem; border-radius: 4px; margin-left: 0.35rem;">Protegido</span>` : '')
             }
           </td>
         `;
@@ -558,6 +576,7 @@
       // Bind edit and delete handlers
       document.querySelectorAll('.edit-user-btn').forEach((btn) => {
         btn.addEventListener('click', () => {
+          const isCurrentMaster = currentUser && (currentUser.role === 'master' || currentUser.role === 'superadmin');
           const id = btn.getAttribute('data-id');
           const name = btn.getAttribute('data-name');
           const email = btn.getAttribute('data-email');
@@ -566,7 +585,14 @@
           document.getElementById('modal-user-id').value = id;
           document.getElementById('modal-name').value = name;
           document.getElementById('modal-email').value = email;
-          document.getElementById('modal-role').value = (role === 'master' || role === 'superadmin') ? 'master' : 'admin';
+
+          const roleSelectGroup = document.getElementById('modal-role').closest('.form-group');
+          if (!isCurrentMaster) {
+            roleSelectGroup.style.display = 'none';
+          } else {
+            roleSelectGroup.style.display = 'block';
+            document.getElementById('modal-role').value = (role === 'master' || role === 'superadmin') ? 'master' : 'admin';
+          }
 
           document.getElementById('modal-user-title').textContent = 'Editar Administrador';
           document.getElementById('modal-password-label').textContent = 'Nova Senha (opcional)';

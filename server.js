@@ -269,10 +269,19 @@ app.get("/api/admin/me", auth.requireAuth, (req, res) => {
 // ADMIN USER MANAGEMENT ENDPOINTS
 // ============================================================================
 
-// List Users
+// List Users (Master sees all; common admin does NOT see master)
 app.get("/api/admin/users", auth.requireAuth, async (req, res) => {
   try {
-    const result = await db.query("SELECT id, name, email, role, last_login, created_at FROM admin_users ORDER BY id ASC");
+    const isMaster = req.user.role === "master" || req.user.role === "superadmin";
+    let queryText = "SELECT id, name, email, role, last_login, created_at FROM admin_users";
+
+    if (!isMaster) {
+      // Administrador comum não enxerga contas master
+      queryText += " WHERE role NOT IN ('master', 'superadmin')";
+    }
+    queryText += " ORDER BY id ASC";
+
+    const result = await db.query(queryText);
     return res.json({ users: result.rows });
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -292,10 +301,14 @@ app.post("/api/admin/users", auth.requireAuth, async (req, res) => {
       return res.status(400).json({ error: "Este e-mail já está cadastrado." });
     }
 
+    const isMaster = req.user.role === "master" || req.user.role === "superadmin";
+    // Apenas Master pode criar outro Master. Administrador comum só cria "admin"
+    const assignedRole = isMaster && (role === "master" || role === "superadmin") ? "master" : "admin";
+
     const { hash, salt } = auth.hashPassword(password);
     const result = await db.query(
       "INSERT INTO admin_users (name, email, password_hash, salt, role) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, role, created_at",
-      [name.trim(), email.trim().toLowerCase(), hash, salt, role || "admin"]
+      [name.trim(), email.trim().toLowerCase(), hash, salt, assignedRole]
     );
 
     return res.status(201).json({ success: true, user: result.rows[0] });
@@ -315,16 +328,30 @@ app.put("/api/admin/users/:id", auth.requireAuth, async (req, res) => {
       return res.status(404).json({ error: "Usuário não encontrado." });
     }
 
+    const targetUser = check.rows[0];
+    const isMaster = req.user.role === "master" || req.user.role === "superadmin";
+    const targetIsMaster = targetUser.role === "master" || targetUser.role === "superadmin";
+
+    // Administrador comum não pode editar a conta do Master
+    if (!isMaster && targetIsMaster) {
+      return res.status(403).json({ error: "Acesso negado. Você não tem permissão para modificar a conta do Proprietário / Master." });
+    }
+
+    // Role assignment: apenas Master pode alterar papéis ou promover a Master
+    let roleVal = targetUser.role;
+    if (isMaster && role) {
+      roleVal = role.trim().toLowerCase();
+    }
+
     if (name && email) {
-      const roleVal = role ? role.trim().toLowerCase() : check.rows[0].role;
       await db.query("UPDATE admin_users SET name = $1, email = $2, role = $3 WHERE id = $4", [
         name.trim(),
         email.trim().toLowerCase(),
         roleVal,
         userId,
       ]);
-    } else if (role) {
-      await db.query("UPDATE admin_users SET role = $1 WHERE id = $2", [role.trim().toLowerCase(), userId]);
+    } else if (role && isMaster) {
+      await db.query("UPDATE admin_users SET role = $1 WHERE id = $2", [roleVal, userId]);
     }
 
     if (password && password.trim().length >= 6) {
@@ -338,21 +365,32 @@ app.put("/api/admin/users/:id", auth.requireAuth, async (req, res) => {
   }
 });
 
-// Delete User
+// Delete User (Master can never be deleted; normal admin can be deleted)
 app.delete("/api/admin/users/:id", auth.requireAuth, async (req, res) => {
   try {
     const userId = parseInt(req.params.id, 10);
+
+    const check = await db.query("SELECT * FROM admin_users WHERE id = $1", [userId]);
+    if (check.rows.length === 0) {
+      return res.status(404).json({ error: "Usuário não encontrado." });
+    }
+
+    const targetUser = check.rows[0];
+    const targetIsMaster = targetUser.role === "master" || targetUser.role === "superadmin";
+    const isMaster = req.user.role === "master" || req.user.role === "superadmin";
+
+    // 1. O usuário Master NUNCA pode ser excluído por ninguém
+    if (targetIsMaster) {
+      return res.status(403).json({ error: "O usuário Proprietário / Master é protegido e nunca pode ser excluído." });
+    }
+
+    // 2. Não pode excluir a si próprio
     if (req.user.id === userId) {
       return res.status(400).json({ error: "Você não pode excluir sua própria conta logada." });
     }
 
-    const totalRes = await db.query("SELECT COUNT(*) as count FROM admin_users");
-    if (parseInt(totalRes.rows[0].count, 10) <= 1) {
-      return res.status(400).json({ error: "Não é possível excluir o único administrador do sistema." });
-    }
-
     await db.query("DELETE FROM admin_users WHERE id = $1", [userId]);
-    return res.json({ success: true });
+    return res.json({ success: true, message: "Administrador excluído com sucesso." });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
