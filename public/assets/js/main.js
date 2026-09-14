@@ -55,7 +55,7 @@ function initPricingTabs() {
 
       kitCards.forEach(card => {
         const cardCategory = card.getAttribute('data-category');
-        if (targetCategory === 'all' || cardCategory === targetCategory) {
+        if (targetCategory === 'all' || cardCategory === targetCategory || (cardCategory && cardCategory.includes(targetCategory))) {
           card.style.display = 'flex';
           card.style.animation = 'fadeIn 0.4s ease';
         } else {

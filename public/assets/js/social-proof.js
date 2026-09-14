@@ -46,14 +46,14 @@
 
   // 2. Products Catalog with Images & Labels
   const products = [
+    { title: 'Amostra Grátis (5 Cápsulas)', badge: '🔥 Mais Pedido', img: 'assets/images/hero-sample-promo.png' },
+    { title: 'Amostra Grátis (Pague Só o Frete)', badge: '🔥 Em Alta', img: 'assets/images/hero-sample-promo.png' },
     { title: 'Combo com 2 Kits', badge: 'Mais Vendido', img: 'assets/images/kit-combo-2-bestseller.webp' },
-    { title: 'Combo com 3 Kits', badge: 'Tratamento Completo', img: 'assets/images/kit-combo-3.webp' },
+    { title: 'Amostra Grátis (5 Cápsulas)', badge: '🔥 Mais Pedido', img: 'assets/images/hero-sample-promo.png' },
     { title: 'Combo com 1 Kit', badge: 'Gotas + Cápsulas', img: 'assets/images/kit-combo-1.webp' },
-    { title: 'Combo com 2 Kits', badge: 'Mais Vendido', img: 'assets/images/kit-combo-2-bestseller.webp' },
-    { title: 'Pote 30 Cápsulas 500mg', badge: 'Fórmula Africana', img: 'assets/images/kit-2-capsulas.webp' },
+    { title: 'Amostra Grátis (Pague Só o Frete)', badge: '🔥 Mais Pedido', img: 'assets/images/hero-sample-promo.png' },
     { title: 'Frasco Líquido 30ml', badge: 'Gotas Sublinguais', img: 'assets/images/kit-1-gotas.webp' },
-    { title: 'Amostra Grátis', badge: 'Promoção', img: 'assets/images/hero-sample-promo.png' },
-    { title: 'Combo Máximo com 6 Kits', badge: 'Tratamento Anual', img: 'assets/images/kit-combo-6.webp' },
+    { title: 'Amostra Grátis (5 Cápsulas)', badge: '🔥 Mais Pedido', img: 'assets/images/hero-sample-promo.png' },
   ];
 
   const timeAgoToDisplay = [
@@ -119,13 +119,10 @@
 
     container.appendChild(toastEl);
 
-    // Clicking anywhere on the notification scrolls to the pricing table
+    // Clicking anywhere on the notification opens the free sample checkout
     toastEl.addEventListener('click', (e) => {
       if (e.target.closest('#sp-close')) return;
-      const kitsSection = document.getElementById('kits');
-      if (kitsSection) {
-        kitsSection.scrollIntoView({ behavior: 'smooth' });
-      }
+      window.open('https://rei-natus-suplementos-extrato-africano.pay.yampi.com.br/r/N58J4NCMQ4', '_blank', 'noopener');
     });
 
     // Close button dismisses the current notification
