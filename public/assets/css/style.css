@@ -550,6 +550,108 @@ img {
   font-weight: 600;
 }
 
+/* ==========================================================================
+   HERO SAMPLE POINTER BADGE & BLINKING ARROW
+   ========================================================================== */
+.hero-sample-pointer {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hero-sample-pointer:hover {
+  transform: translateX(-50%) scale(1.06);
+}
+
+.sample-pointer-badge {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%);
+  color: #ffffff;
+  padding: 0.45rem 1.25rem;
+  border-radius: var(--radius-full);
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  box-shadow: 0 4px 18px rgba(239, 68, 68, 0.65), 0 0 0 2.5px rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  white-space: nowrap;
+  animation: badgePulseGlow 2s infinite ease-in-out;
+}
+
+.sample-pointer-fire {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.sample-pointer-text {
+  font-family: var(--font-sans);
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.sample-pointer-arrow {
+  margin-top: 3px;
+  color: #f59e0b;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: arrowBlinkBounce 1.1s infinite ease-in-out;
+}
+
+.sample-pointer-arrow svg {
+  width: 28px;
+  height: 28px;
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.7));
+}
+
+@keyframes arrowBlinkBounce {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+    filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.9));
+  }
+  30% {
+    transform: translateY(8px);
+    opacity: 1;
+    filter: drop-shadow(0 0 14px rgba(245, 158, 11, 1));
+  }
+  55% {
+    transform: translateY(4px);
+    opacity: 0.15;
+    filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.2));
+  }
+  75% {
+    transform: translateY(7px);
+    opacity: 1;
+    filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.9));
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+    filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.9));
+  }
+}
+
+@keyframes badgePulseGlow {
+  0%, 100% {
+    box-shadow: 0 4px 18px rgba(239, 68, 68, 0.65), 0 0 0 0 rgba(239, 68, 68, 0.5);
+  }
+  50% {
+    box-shadow: 0 6px 24px rgba(239, 68, 68, 0.85), 0 0 0 7px rgba(239, 68, 68, 0);
+  }
+}
+
 /* Hero Sample Offer Box */
 .hero-sample-offer-box {
   background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%);
@@ -1787,6 +1889,10 @@ img {
     gap: 2.5rem;
   }
   
+  .hero-visual {
+    margin-top: 1.5rem;
+  }
+
   .hero-card-preview {
     max-width: 550px;
     margin: 0 auto;
